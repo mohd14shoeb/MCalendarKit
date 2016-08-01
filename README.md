@@ -22,7 +22,7 @@ pod "MCalendarKit"
 
 ## Author
 
-- Ridvan Kucuk, ridvan.kucuk@gmail.com
+- Ridvan Kucuk, ridvankuccuk@gmail.com
 - Candost Dagdeviren, candostdagdeviren@gmail.com
 
 ## License
