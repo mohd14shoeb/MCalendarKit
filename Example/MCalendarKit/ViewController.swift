@@ -7,18 +7,87 @@
 //
 
 import UIKit
+import MCalendarKit
+import EventKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDelegate {
+    
+    var viewCalendar: MCalendarView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        var params = [Parameters : AnyObject]()
+        params[.MinimumInterItemSpacing] = 5
+        params[.BackgroundColor] = UIColor.brownColor()
+        params[.MinimumLineSpacing] = 3
+        params[.AllowMultipleSelection] = false
+        
+        self.viewCalendar = MCalendarView()
+        self.viewCalendar?.direction = .Horizontal
+        self.viewCalendar?.parameters = params
+        self.viewCalendar?.translatesAutoresizingMaskIntoConstraints = false
+        self.viewCalendar?.delegate = self
+        self.viewCalendar?.dataSource = self
+        self.view.addSubview(self.viewCalendar!)
+        
+        
+        let views = ["view_calendar" : self.viewCalendar!]
+        
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view_calendar]|", options: [], metrics: nil, views: views))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view_calendar(300)]", options: [], metrics: nil, views: views))
+        
+        let dateComponents = NSDateComponents()
+        dateComponents.day = -5
+        
+        let today = NSDate()
+        
+        if let date = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions()) {
+            self.viewCalendar?.selectDate(date)
+        }
     }
-
+    
+    override func viewDidLayoutSubviews() {
+        
+        super.viewDidLayoutSubviews()
+        
+        let width = self.view.frame.size.width - 16.0 * 2
+        let height = width + 20.0
+        self.viewCalendar?.frame = CGRect(x: 16.0, y: 32.0, width: width, height: height)
+        
+        
+    }
+    
+    //MARK: RKCalendarViewDataSource
+    func startDate() -> NSDate? {
+        return NSDate()
+    }
+    
+    func endDate() -> NSDate? {
+        
+        let dateComponents = NSDateComponents()
+        
+        dateComponents.year = 2;
+        let today = NSDate()
+        
+        let twoYearsFromNow = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions())
+        
+        return twoYearsFromNow
+    }
+    
+    //MARK: RKCalendarViewDelegate
+    func calendar(calendar: MCalendarView, didSelectDate date: NSDate, withEvents events: [EKEvent]) {
+        
+    }
+    
+    func calendar(calendar: MCalendarView, didScrollToMonth date: NSDate) {
+        
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
 }
 
