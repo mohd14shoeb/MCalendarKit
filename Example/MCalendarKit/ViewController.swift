@@ -18,10 +18,8 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         super.viewDidLoad()
         
         var params = [Parameters : AnyObject]()
-        params[.MinimumInterItemSpacing] = 5
         params[.BackgroundColor] = UIColor.brownColor()
-        params[.MinimumLineSpacing] = 3
-        params[.AllowMultipleSelection] = false
+        params[.AllowMultipleSelection] = true
         
         self.viewCalendar = MCalendarView()
         self.viewCalendar?.direction = .Horizontal
@@ -52,7 +50,7 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         super.viewDidLayoutSubviews()
         
         let width = self.view.frame.size.width - 16.0 * 2
-        let height = width + 20.0
+        let height = width + 30.0
         self.viewCalendar?.frame = CGRect(x: 16.0, y: 32.0, width: width, height: height)
         
         

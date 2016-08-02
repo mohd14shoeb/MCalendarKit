@@ -68,7 +68,7 @@ class MCalendarDayCell: UICollectionViewCell {
         
         let view = UIView(frame: vFrame)
         
-        view.layer.cornerRadius = view.frame.size.width/2 - 1
+        view.layer.cornerRadius = view.frame.size.width/2
         
         view.layer.borderColor = borderColor.CGColor
         view.layer.borderWidth = 0.0

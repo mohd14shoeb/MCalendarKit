@@ -47,9 +47,9 @@ extension EKEvent {
 
 public enum Parameters: String {
     
-    case MinimumInterItemSpacing = "minimumInterItemSpacing", MinimumLineSpacing = "minimumLineSpacing", BackgroundColor = "backgroundColor", AllowMultipleSelection = "allowMultipleSelection", None = "none"
+    case BackgroundColor = "backgroundColor", AllowMultipleSelection = "allowMultipleSelection", None = "none"
     
-    static let values = [MinimumInterItemSpacing, MinimumLineSpacing, BackgroundColor, AllowMultipleSelection, None]
+    static let values = [BackgroundColor, AllowMultipleSelection, None]
     
     public static func get(status:String) -> Parameters {
         
@@ -84,6 +84,10 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         didSet {
             if let layout = self.calendarView.collectionViewLayout as? MCalendarFlowLayout {
                 layout.scrollDirection = direction
+                
+                if let backgroundColor = self.parameters[.BackgroundColor] as? UIColor{
+                    self.calendarView.backgroundColor = backgroundColor
+                }
                 self.calendarView.reloadData()
             }
         }
@@ -191,20 +195,13 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         guard let layout = self.calendarView.collectionViewLayout as? MCalendarFlowLayout else {
             return
         }
-        
         if let backgroundColor = self.parameters[.BackgroundColor] as? UIColor{
             self.calendarView.backgroundColor = backgroundColor
         }
-
-//        if let minimumInteritemSpacing = self.parameters[.MinimumInterItemSpacing] as? CGFloat{
-//            layout.minimumInteritemSpacing = minimumInteritemSpacing
-//        }
-//        
-//        if let minimumLineSpacing = self.parameters[.MinimumLineSpacing] as? CGFloat{
-//            layout.minimumLineSpacing = minimumLineSpacing
-//        }
-
-        self.calendarView.reloadData()
+        
+        if let multipleSelection = self.parameters[.AllowMultipleSelection] as? Bool{
+            self.calendarView.allowsMultipleSelection = multipleSelection
+        }
         
     }
     
