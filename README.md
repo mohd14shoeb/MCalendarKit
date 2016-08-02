@@ -19,6 +19,10 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "MCalendarKit"
 ```
+## TODOS
+- [ ] Show out of the days in the month
+- [ ] Show as week
+- [ ] Add multiple dots for day
 
 ## Author
 
