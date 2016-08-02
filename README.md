@@ -23,7 +23,7 @@ pod "MCalendarKit"
 - [ ] Show out of the days in the month
 - [ ] Show as week
 - [ ] Add multiple dots for day
-
+- [ ] Landscape support
 ## Author
 
 - Ridvan Kucuk, ridvankuccuk@gmail.com
