@@ -8,7 +8,6 @@
 
 import UIKit
 
-let cellColorDefault = UIColor(white: 0.0, alpha: 0.1)
 let cellColorToday = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.3)
 let borderColor = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.8)
 
@@ -39,24 +38,28 @@ class MCalendarDayCell: UICollectionViewCell {
         didSet {
            
             if isToday == true {
-                self.pBackgroundView.backgroundColor = cellColorToday
+                self.pBackgroundView.backgroundColor = todayDeselectedBackgroundColor ?? UIColor.redColor()
             }
             else {
-                self.pBackgroundView.backgroundColor = cellColorDefault
+                self.pBackgroundView.backgroundColor = deselectedBackgroundColor ?? UIColor.redColor()
             }
         }
     }
+    
+    var selectedBackgroundColor : UIColor?
+    var deselectedBackgroundColor : UIColor?
+    var todayDeselectedBackgroundColor : UIColor?
     
     override var selected : Bool {
         
         didSet {
             
             if selected == true {
-                self.pBackgroundView.backgroundColor = UIColor.blueColor()
+                self.pBackgroundView.backgroundColor = selectedBackgroundColor ?? UIColor.blueColor()
                 
             }
             else {
-                self.pBackgroundView.backgroundColor = cellColorDefault
+                self.pBackgroundView.backgroundColor = isToday ? todayDeselectedBackgroundColor ?? UIColor.redColor() : deselectedBackgroundColor ?? UIColor.redColor()
             }
             
         }
@@ -75,9 +78,8 @@ class MCalendarDayCell: UICollectionViewCell {
         
         view.center = CGPoint(x: self.bounds.size.width * 0.5, y: self.bounds.size.height * 0.5)
         
-        view.backgroundColor = cellColorDefault
-        
-        
+        view.backgroundColor = UIColor.redColor()
+
         return view
     }()
     
@@ -118,5 +120,8 @@ class MCalendarDayCell: UICollectionViewCell {
         super.init(coder: aDecoder)
     }
     
+    override func prepareForReuse() {
+        
+    }
     
 }
