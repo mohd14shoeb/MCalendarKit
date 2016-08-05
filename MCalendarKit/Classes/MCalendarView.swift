@@ -9,20 +9,6 @@
 import UIKit
 import EventKit
 
-let cellReuseIdentifier = "CalendarDayCell"
-
-let NUMBER_OF_DAYS_IN_WEEK = 7
-let MAXIMUM_NUMBER_OF_ROWS = 6
-
-let HEADER_DEFAULT_HEIGHT : CGFloat = 80.0
-
-
-let FIRST_DAY_INDEX = 0
-let NUMBER_OF_DAYS_INDEX = 1
-let DATE_SELECTED_INDEX = 2
-
-
-
 extension EKEvent {
     var isOneDay : Bool {
         let components = NSCalendar.currentCalendar().components([.Era, .Year, .Month, .Day], fromDate: self.startDate, toDate: self.endDate, options: NSCalendarOptions())
@@ -63,7 +49,17 @@ public enum Parameters: String {
 }
 
 public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
-    
+
+    private enum CalendarViewConstants {
+        static let cellReuseIdentifier = "CalendarDayCell"
+        static let numberOfDaysInWeek = 7
+        static let maximumNumberOfRows = 6
+        static let headerDefaultHeight : CGFloat = 80.0
+        static let firstDayIndex = 0
+        static let numberOfDaysIndex = 1
+        static let selectedDateIndex = 2
+    }
+
     public var dataSource  : CalendarViewDataSource?
     public var delegate    : CalendarViewDelegate?
     
@@ -142,14 +138,14 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
     override public var frame: CGRect {
         didSet {
             
-            let heigh = frame.size.height - HEADER_DEFAULT_HEIGHT
+            let heigh = frame.size.height - CalendarViewConstants.headerDefaultHeight
             let width = frame.size.width
             
-            self.headerView.frame   = CGRect(x:0.0, y:0.0, width: frame.size.width, height:HEADER_DEFAULT_HEIGHT)
-            self.calendarView.frame = CGRect(x:0.0, y:HEADER_DEFAULT_HEIGHT, width: width, height: heigh)
+            self.headerView.frame   = CGRect(x:0.0, y:0.0, width: frame.size.width, height:CalendarViewConstants.headerDefaultHeight)
+            self.calendarView.frame = CGRect(x:0.0, y:CalendarViewConstants.headerDefaultHeight, width: width, height: heigh)
             
             if let layout = self.calendarView.collectionViewLayout as? MCalendarFlowLayout {
-                layout.itemSize = CGSizeMake(width / CGFloat(NUMBER_OF_DAYS_IN_WEEK), heigh / CGFloat(MAXIMUM_NUMBER_OF_ROWS))
+                layout.itemSize = CGSizeMake(width / CGFloat(CalendarViewConstants.numberOfDaysInWeek), heigh / CGFloat(CalendarViewConstants.maximumNumberOfRows))
             }
 
 
@@ -186,7 +182,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         self.clipsToBounds = true
         
         // Register Class
-        self.calendarView.registerClass(MCalendarDayCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
+        self.calendarView.registerClass(MCalendarDayCell.self, forCellWithReuseIdentifier: CalendarViewConstants.cellReuseIdentifier)
 
         self.addSubview(self.headerView)
         self.addSubview(self.calendarView)
@@ -290,19 +286,19 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         
         monthInfo[section] = [firstWeekdayOfMonthIndex, numberOfDaysInMonth]
         
-        return NUMBER_OF_DAYS_IN_WEEK * MAXIMUM_NUMBER_OF_ROWS // 7 x 6 = 42
+        return CalendarViewConstants.numberOfDaysInWeek * CalendarViewConstants.maximumNumberOfRows // 7 x 6 = 42
         
         
     }
     
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        let dayCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as! MCalendarDayCell
+        let dayCell = collectionView.dequeueReusableCellWithReuseIdentifier(CalendarViewConstants.cellReuseIdentifier, forIndexPath: indexPath) as! MCalendarDayCell
         
         let currentMonthInfo : [Int] = monthInfo[indexPath.section]! // we are guaranteed an array by the fact that we reached this line (so unwrap)
         
-        let fdIndex = currentMonthInfo[FIRST_DAY_INDEX]
-        let nDays = currentMonthInfo[NUMBER_OF_DAYS_INDEX]
+        let fdIndex = currentMonthInfo[CalendarViewConstants.firstDayIndex]
+        let nDays = currentMonthInfo[CalendarViewConstants.numberOfDaysIndex]
         
         let fromStartOfMonthIndexPath = NSIndexPath(forItem: indexPath.item - fdIndex, inSection: indexPath.section) // if the first is wednesday, add 2
         
@@ -403,7 +399,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
     public func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         let currentMonthInfo : [Int] = monthInfo[indexPath.section]!
-        let firstDayInMonth = currentMonthInfo[FIRST_DAY_INDEX]
+        let firstDayInMonth = currentMonthInfo[CalendarViewConstants.firstDayIndex]
         
         let offsetComponents = NSDateComponents()
         offsetComponents.month = indexPath.section
@@ -477,7 +473,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         }
         
         
-        let item = distanceFromStartComponent.day + currentMonthInfo[FIRST_DAY_INDEX]
+        let item = distanceFromStartComponent.day + currentMonthInfo[CalendarViewConstants.firstDayIndex]
         let indexPath = NSIndexPath(forItem: item, inSection: distanceFromStartComponent.month)
         
         return indexPath
@@ -493,7 +489,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         
         let currentMonthInfo : [Int] = monthInfo[indexPath.section]!
     
-        let fromStartOfMonthIndexPath = NSIndexPath(forItem: indexPath.item - currentMonthInfo[FIRST_DAY_INDEX], inSection: indexPath.section)
+        let fromStartOfMonthIndexPath = NSIndexPath(forItem: indexPath.item - currentMonthInfo[CalendarViewConstants.firstDayIndex], inSection: indexPath.section)
         
         var eventsArray : [EKEvent] = [EKEvent]()
         
