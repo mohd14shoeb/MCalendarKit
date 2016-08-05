@@ -373,35 +373,36 @@ extension MCalendarView: UICollectionViewDataSource {
         let nDays = currentMonthInfo[CalendarViewConstants.numberOfDaysIndex]
 
         let fromStartOfMonthIndexPath = NSIndexPath(forItem: indexPath.item - fdIndex, inSection: indexPath.section) // if the first is wednesday, add 2
-
+        var cellData = DayCellData()
         if indexPath.item >= fdIndex &&
             indexPath.item < fdIndex + nDays {
-
-            dayCell.textLabel.text = String(fromStartOfMonthIndexPath.item + 1)
-            dayCell.hidden = false
+            cellData.dayNumber = String(fromStartOfMonthIndexPath.item + 1)
+            cellData.shouldHideCell = false
 
         }
         else {
-            dayCell.textLabel.text = ""
-            dayCell.hidden = true
+            cellData.shouldHideCell = true
         }
 
-        dayCell.selected = selectedIndexPaths.contains(indexPath)
-
+        let isSelected = selectedIndexPaths.contains(indexPath)
+        cellData.selected = isSelected
         if indexPath.section == 0 && indexPath.item == 0 {
             scrollViewDidEndDecelerating(collectionView)
         }
 
         if let idx = todayIndexPath {
-            dayCell.isToday = (idx.section == indexPath.section && idx.item + fdIndex == indexPath.item)
+            cellData.today = (idx.section == indexPath.section && idx.item + fdIndex == indexPath.item)
         }
 
+        cellData.todayColor = UIColor.greenColor()
         if let eventsForDay = eventsByIndexPath[fromStartOfMonthIndexPath] {
-            dayCell.eventsCount = eventsForDay.count
+            cellData.eventCount = eventsForDay.count
 
         } else {
-            dayCell.eventsCount = 0
+            cellData.eventCount = 0
         }
+
+        dayCell.setCellData(cellData)
 
         //        if let selectedCellBackgroundColor = self.selectedCellBackgroundColor {
         //            dayCell.selectedBackgroundColor = selectedCellBackgroundColor
@@ -427,8 +428,6 @@ extension MCalendarView: UICollectionViewDelegate {
         let offsetComponents = NSDateComponents()
         offsetComponents.month = indexPath.section
         offsetComponents.day = indexPath.item - firstDayInMonth
-
-
 
         if let dateUserSelected = gregorian.dateByAddingComponents(offsetComponents, toDate: startOfMonthCache, options: NSCalendarOptions()) {
 
