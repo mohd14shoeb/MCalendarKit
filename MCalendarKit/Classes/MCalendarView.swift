@@ -47,9 +47,9 @@ extension EKEvent {
 
 public enum Parameters: String {
     
-    case BackgroundColor = "backgroundColor", AllowMultipleSelection = "allowMultipleSelection", None = "none"
+    case CalendarBackgroundColor = "backgroundColor", SelectedCellBackgroundColor = "selectedCellBackgroundColor", DeselectedCellBackgroundColor = "deselectedCellBackgroundColor", AllowMultipleSelection = "allowMultipleSelection", TodayDeSelectedBackgroundColor = "todayDeselectedBackgroundColor", None = "none"
     
-    static let values = [BackgroundColor, AllowMultipleSelection, None]
+    static let values = [CalendarBackgroundColor, SelectedCellBackgroundColor, DeselectedCellBackgroundColor, AllowMultipleSelection, None]
     
     public static func get(status:String) -> Parameters {
         
@@ -84,10 +84,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         didSet {
             if let layout = self.calendarView.collectionViewLayout as? MCalendarFlowLayout {
                 layout.scrollDirection = direction
-                
-                if let backgroundColor = self.parameters[.BackgroundColor] as? UIColor{
-                    self.calendarView.backgroundColor = backgroundColor
-                }
+
                 self.calendarView.reloadData()
             }
         }
@@ -109,6 +106,10 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
             self.reloadParameters()
         }
     }
+    
+    private var deselectedCellBackgroundColor : UIColor? // Default cell background Color
+    private var selectedCellBackgroundColor : UIColor? // Selected cell background Color
+    private var todayDeselectedBackgroundColor : UIColor?
     
     lazy var headerView : MCalendarHeaderView = {
        
@@ -132,6 +133,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
+        cv.allowsMultipleSelection = true
         
         return cv
         
@@ -195,12 +197,28 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         guard let layout = self.calendarView.collectionViewLayout as? MCalendarFlowLayout else {
             return
         }
-        if let backgroundColor = self.parameters[.BackgroundColor] as? UIColor{
+        if let backgroundColor = self.parameters[.CalendarBackgroundColor] as? UIColor{
             self.calendarView.backgroundColor = backgroundColor
         }
         
         if let multipleSelection = self.parameters[.AllowMultipleSelection] as? Bool{
             self.calendarView.allowsMultipleSelection = multipleSelection
+        }
+        
+        if let cellBGColor = self.parameters[.SelectedCellBackgroundColor] as? UIColor{
+            self.selectedCellBackgroundColor = cellBGColor
+        }
+        
+        if let deselectedCellBGColor = self.parameters[.DeselectedCellBackgroundColor] as? UIColor{
+            self.deselectedCellBackgroundColor = deselectedCellBGColor
+        }
+        
+        if let todayDeselectedBGColor = self.parameters[.TodayDeSelectedBackgroundColor] as? UIColor{
+            
+        }
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            self.calendarView.reloadData()
         }
         
     }
@@ -280,7 +298,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let dayCell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseIdentifier, forIndexPath: indexPath) as! MCalendarDayCell
-     
+        
         let currentMonthInfo : [Int] = monthInfo[indexPath.section]! // we are guaranteed an array by the fact that we reached this line (so unwrap)
         
         let fdIndex = currentMonthInfo[FIRST_DAY_INDEX]
@@ -309,16 +327,23 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         if let idx = todayIndexPath {
             dayCell.isToday = (idx.section == indexPath.section && idx.item + fdIndex == indexPath.item)
         }
-        
-        
+    
         if let eventsForDay = eventsByIndexPath[fromStartOfMonthIndexPath] {
-            
             dayCell.eventsCount = eventsForDay.count
             
         } else {
             dayCell.eventsCount = 0
         }
         
+//        if let selectedCellBackgroundColor = self.selectedCellBackgroundColor {
+//            dayCell.selectedBackgroundColor = selectedCellBackgroundColor
+//        }
+//        if let deselectedCellBackgroundColor = self.deselectedCellBackgroundColor {
+//            dayCell.deselectedBackgroundColor = deselectedCellBackgroundColor
+//        }
+//        if let todayDeselectedBackgroundColor = self.todayDeselectedBackgroundColor {
+//            dayCell.todayDeselectedBackgroundColor = todayDeselectedBackgroundColor
+//        }
         
         return dayCell
     }
@@ -429,8 +454,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
         guard self.calendarView.indexPathsForSelectedItems()?.contains(indexPath) == true else {
             return
         }
-        
-        
+
         self.calendarView.deselectItemAtIndexPath(indexPath, animated: false)
         
         guard let index = selectedIndexPaths.indexOf(indexPath) else {
@@ -447,7 +471,7 @@ public class MCalendarView: UIView, UICollectionViewDataSource, UICollectionView
     func indexPathForDate(date : NSDate) -> NSIndexPath? {
      
         let distanceFromStartComponent = self.gregorian.components( [.Month, .Day], fromDate:startOfMonthCache, toDate: date, options: NSCalendarOptions() )
-        
+
         guard let currentMonthInfo : [Int] = monthInfo[distanceFromStartComponent.month] else {
             return nil
         }

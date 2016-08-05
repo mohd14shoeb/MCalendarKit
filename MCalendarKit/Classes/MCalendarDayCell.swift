@@ -1,13 +1,14 @@
 //
-//  MCalendarDayCell.swift
-//  Pods
+//  KDCalendarDayCell.swift
+//  KDCalendar
 //
-//  Created by Ridvan Kucuk on 5/25/16.
-//
+//  Created by Michael Michailidis on 02/04/2015.
+//  Copyright (c) 2015 Karmadust. All rights reserved.
 //
 
 import UIKit
 
+let cellColorDefault = UIColor(white: 0.0, alpha: 0.1)
 let cellColorToday = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.3)
 let borderColor = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.8)
 
@@ -36,55 +37,51 @@ class MCalendarDayCell: UICollectionViewCell {
     var isToday : Bool = false {
         
         didSet {
-           
+            //Bug appears here while trying to set backgroundColor
             if isToday == true {
-                self.pBackgroundView.backgroundColor = todayDeselectedBackgroundColor ?? UIColor.redColor()
+                self.pBackgroundView.backgroundColor = cellColorToday
             }
             else {
-                self.pBackgroundView.backgroundColor = deselectedBackgroundColor ?? UIColor.redColor()
+                self.pBackgroundView.backgroundColor = UIColor.blueColor()
             }
         }
     }
-    
-    var selectedBackgroundColor : UIColor?
-    var deselectedBackgroundColor : UIColor?
-    var todayDeselectedBackgroundColor : UIColor?
     
     override var selected : Bool {
         
         didSet {
-            
+            //Bug appears here while trying to set backgroundColor
             if selected == true {
-                self.pBackgroundView.backgroundColor = selectedBackgroundColor ?? UIColor.blueColor()
-                
+                self.pBackgroundView.backgroundColor = UIColor.redColor()
             }
             else {
-                self.pBackgroundView.backgroundColor = isToday ? todayDeselectedBackgroundColor ?? UIColor.redColor() : deselectedBackgroundColor ?? UIColor.redColor()
+                self.pBackgroundView.backgroundColor = UIColor.blueColor()
             }
             
         }
     }
     
-     lazy var pBackgroundView : UIView = {
+    lazy var pBackgroundView : UIView = {
         
         var vFrame = CGRectInset(self.frame, 3.0, 3.0)
         
         let view = UIView(frame: vFrame)
         
-        view.layer.cornerRadius = view.frame.size.width/2
+        view.layer.cornerRadius = 4.0
         
-        view.layer.borderColor = borderColor.CGColor
-        view.layer.borderWidth = 0.0
+//        view.layer.borderColor = borderColor.CGColor
+//        view.layer.borderWidth = 0.0
         
         view.center = CGPoint(x: self.bounds.size.width * 0.5, y: self.bounds.size.height * 0.5)
         
-        view.backgroundColor = UIColor.redColor()
-
+        view.backgroundColor = UIColor.blueColor()
+        
+        
         return view
     }()
     
     lazy var textLabel : UILabel = {
-       
+        
         let lbl = UILabel()
         lbl.textAlignment = NSTextAlignment.Center
         lbl.textColor = UIColor.darkGrayColor()
@@ -102,7 +99,7 @@ class MCalendarDayCell: UICollectionViewCell {
         return dv
         
     }()
-
+    
     override init(frame: CGRect) {
         
         super.init(frame: frame)
@@ -115,13 +112,15 @@ class MCalendarDayCell: UICollectionViewCell {
         
         self.addSubview(dotsView)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     override func prepareForReuse() {
-        
+        self.selected = false
+        self.isToday = false
+        self.pBackgroundView.backgroundColor = UIColor.blueColor()
     }
     
 }

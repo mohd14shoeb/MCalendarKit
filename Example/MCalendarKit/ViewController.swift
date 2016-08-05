@@ -18,8 +18,11 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         super.viewDidLoad()
         
         var params = [Parameters : AnyObject]()
-        params[.BackgroundColor] = UIColor.brownColor()
+        params[.CalendarBackgroundColor] = UIColor.brownColor()
         params[.AllowMultipleSelection] = true
+        params[.SelectedCellBackgroundColor] = UIColor.cyanColor()
+        params[.DeselectedCellBackgroundColor] = UIColor.lightGrayColor()
+        params[.TodayDeSelectedBackgroundColor] = UIColor.redColor()
         
         self.viewCalendar = MCalendarView()
         self.viewCalendar?.direction = .Horizontal
@@ -35,14 +38,14 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view_calendar]|", options: [], metrics: nil, views: views))
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view_calendar(300)]", options: [], metrics: nil, views: views))
         
-        let dateComponents = NSDateComponents()
-        dateComponents.day = -5
-        
-        let today = NSDate()
-        
-        if let date = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions()) {
-            self.viewCalendar?.selectDate(date)
-        }
+//        let dateComponents = NSDateComponents()
+//        dateComponents.day = 0
+//        
+//        let today = NSDate()
+//        
+//        if let date = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions()) {
+//            self.viewCalendar?.selectDate(date)
+//        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -75,7 +78,7 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
     
     //MARK: RKCalendarViewDelegate
     func calendar(calendar: MCalendarView, didSelectDate date: NSDate, withEvents events: [EKEvent]) {
-        
+        print(date)
     }
     
     func calendar(calendar: MCalendarView, didScrollToMonth date: NSDate) {
