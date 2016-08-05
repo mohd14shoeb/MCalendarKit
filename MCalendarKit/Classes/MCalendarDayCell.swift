@@ -38,8 +38,6 @@ class MCalendarDayCell: UICollectionViewCell {
 
     private var cellData:DayCellData!
     private enum CellConstants {
-        static let cellColorDefault = UIColor(white: 0.0, alpha: 0.1)
-        static let cellColorToday = UIColor(red: 254.0/255.0, green: 90.0/255.0, blue: 64.0/255.0, alpha: 1)
         static let borderColor = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.8)
     }
     var eventsCount = 0 {
@@ -82,7 +80,6 @@ class MCalendarDayCell: UICollectionViewCell {
 
         didSet {
             self.cellData.selected = selected
-            //Bug appears here while trying to set backgroundColor
             if selected == true {
                 self.backgroundView?.backgroundColor = UIColor.redColor()
             }
@@ -111,7 +108,6 @@ class MCalendarDayCell: UICollectionViewCell {
         let frm = CGRect(x: 8.0, y: self.frame.size.width - 10.0 - 4.0, width: self.frame.size.width - 16.0, height: 8.0)
         let dv = UIView(frame: frm)
 
-
         return dv
 
     }()
@@ -119,7 +115,6 @@ class MCalendarDayCell: UICollectionViewCell {
     override init(frame: CGRect) {
 
         super.init(frame: frame)
-
 
         self.backgroundView = UIView(frame:self.frame)
 
