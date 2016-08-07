@@ -88,7 +88,13 @@ public class MCalendarView: UIView {
     }
 
     var displayDate: NSDate?
-    var monthInfo = [Int:[Int]]()
+    var monthInfo = [Int:[Int]]() {
+        didSet {
+            if let selectedDate = dateBeingSelectedByUser {
+                self.selectDate(selectedDate)
+            }
+        }
+    }
 
     lazy var headerView: MCalendarHeaderView = {
 
@@ -141,7 +147,7 @@ public class MCalendarView: UIView {
     private var deselectedCellBackgroundColor: UIColor? // Default cell background Color
     private var selectedCellBackgroundColor: UIColor? // Selected cell background Color
     private var todayDeselectedBackgroundColor: UIColor?
-    
+
     override public var frame: CGRect {
         didSet {
             let heigh = frame.size.height - CalendarViewConstants.headerDefaultHeight
@@ -172,7 +178,7 @@ public class MCalendarView: UIView {
     }
 
     public func selectDate(date : NSDate) {
-
+        
         guard let indexPath = indexPathForDate(date) else {
             return
         }
@@ -182,10 +188,11 @@ public class MCalendarView: UIView {
         }
 
         calendarView.selectItemAtIndexPath(indexPath, animated: false, scrollPosition: .None)
-
+        self.collectionView(calendarView, didSelectItemAtIndexPath: indexPath)
+        
         selectedIndexPaths.append(indexPath)
         selectedDates.append(date)
-
+        
     }
 
     func deselectDate(date : NSDate) {
@@ -210,19 +217,26 @@ public class MCalendarView: UIView {
     }
 
     func indexPathForDate(date : NSDate) -> NSIndexPath? {
-
+        
         let distanceFromStartComponent = gregorian.components( [.Month, .Day], fromDate:startOfMonthCache, toDate: date, options: NSCalendarOptions() )
+        
+        if monthInfo.count > 0 {
+            guard let currentMonthInfo : [Int] = monthInfo[distanceFromStartComponent.month] else {
+                return nil
+            }
+            
+            
+            let item = distanceFromStartComponent.day + currentMonthInfo[CalendarViewConstants.firstDayIndex]
+            let indexPath = NSIndexPath(forItem: item, inSection: distanceFromStartComponent.month)
+            
+            return indexPath
 
-        guard let currentMonthInfo : [Int] = monthInfo[distanceFromStartComponent.month] else {
+        }
+        else {
+            self.dateBeingSelectedByUser = date
             return nil
         }
-
-
-        let item = distanceFromStartComponent.day + currentMonthInfo[CalendarViewConstants.firstDayIndex]
-        let indexPath = NSIndexPath(forItem: item, inSection: distanceFromStartComponent.month)
-
-        return indexPath
-
+        
     }
 
     func reloadData() {
@@ -296,7 +310,7 @@ public class MCalendarView: UIView {
         }
     }
 }
-
+// MARK: UICollectionViewDataSource
 extension MCalendarView: UICollectionViewDataSource {
     
     public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -394,7 +408,7 @@ extension MCalendarView: UICollectionViewDataSource {
             cellData.today = (idx.section == indexPath.section && idx.item + fdIndex == indexPath.item)
         }
 
-        cellData.todayColor = UIColor.greenColor()
+        cellData.todayColor = .greenColor()
         if let eventsForDay = eventsByIndexPath[fromStartOfMonthIndexPath] {
             cellData.eventCount = eventsForDay.count
 
@@ -403,21 +417,12 @@ extension MCalendarView: UICollectionViewDataSource {
         }
 
         dayCell.setCellData(cellData)
-
-        //        if let selectedCellBackgroundColor = self.selectedCellBackgroundColor {
-        //            dayCell.selectedBackgroundColor = selectedCellBackgroundColor
-        //        }
-        //        if let deselectedCellBackgroundColor = self.deselectedCellBackgroundColor {
-        //            dayCell.deselectedBackgroundColor = deselectedCellBackgroundColor
-        //        }
-        //        if let todayDeselectedBackgroundColor = self.todayDeselectedBackgroundColor {
-        //            dayCell.todayDeselectedBackgroundColor = todayDeselectedBackgroundColor
-        //        }
         
         return dayCell
     }
 }
 
+// MARK: UICollectionViewDelegate
 extension MCalendarView: UICollectionViewDelegate {
 
     public func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -465,6 +470,7 @@ extension MCalendarView: UICollectionViewDelegate {
         // Update model
         selectedIndexPaths.append(indexPath)
         selectedDates.append(dateBeingSelectedByUser)
+
     }
 
     public func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
@@ -483,7 +489,7 @@ extension MCalendarView: UICollectionViewDelegate {
         selectedDates.removeAtIndex(index)
     }
 }
-
+// MARK: UIScrollViewDelegate
 extension MCalendarView: UIScrollViewDelegate {
 
     public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {

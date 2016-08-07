@@ -24,37 +24,37 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         params[.DeselectedCellBackgroundColor] = UIColor.lightGrayColor()
         params[.TodayDeSelectedBackgroundColor] = UIColor.redColor()
         
-        self.viewCalendar = MCalendarView()
-        self.viewCalendar?.direction = .Horizontal
-        self.viewCalendar?.parameters = params
-        self.viewCalendar?.translatesAutoresizingMaskIntoConstraints = false
-        self.viewCalendar?.delegate = self
-        self.viewCalendar?.dataSource = self
-        self.view.addSubview(self.viewCalendar!)
+        viewCalendar = MCalendarView()
+        viewCalendar?.direction = .Horizontal
+        viewCalendar?.parameters = params
+        viewCalendar?.translatesAutoresizingMaskIntoConstraints = false
+        viewCalendar?.delegate = self
+        viewCalendar?.dataSource = self
+        view.addSubview(self.viewCalendar!)
         
         
-        let views = ["view_calendar" : self.viewCalendar!]
+        let views = ["view_calendar" : viewCalendar!]
         
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view_calendar]|", options: [], metrics: nil, views: views))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view_calendar(300)]", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view_calendar]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view_calendar(300)]", options: [], metrics: nil, views: views))
         
-//        let dateComponents = NSDateComponents()
-//        dateComponents.day = 0
-//        
-//        let today = NSDate()
-//        
-//        if let date = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions()) {
-//            self.viewCalendar?.selectDate(date)
-//        }
+        let dateComponents = NSDateComponents()
+        dateComponents.day = 0
+        
+        let today = NSDate()
+        
+        if let date = self.viewCalendar!.calendar.dateByAddingComponents(dateComponents, toDate: today, options: NSCalendarOptions()) {
+            self.viewCalendar?.selectDate(date)
+        }
     }
     
     override func viewDidLayoutSubviews() {
         
         super.viewDidLayoutSubviews()
         
-        let width = self.view.frame.size.width - 16.0 * 2
+        let width = view.frame.size.width - 16.0 * 2
         let height = width + 30.0
-        self.viewCalendar?.frame = CGRect(x: 16.0, y: 32.0, width: width, height: height)
+        viewCalendar?.frame = CGRect(x: 16.0, y: 32.0, width: width, height: height)
         
         
     }

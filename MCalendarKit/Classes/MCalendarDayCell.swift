@@ -1,11 +1,10 @@
 //
-//  KDCalendarDayCell.swift
-//  KDCalendar
+//  MCalendarDayCell.swift
+//  Pods
 //
-//  Created by Michael Michailidis on 02/04/2015.
-//  Copyright (c) 2015 Karmadust. All rights reserved.
+//  Created by Ridvan Kucuk on 5/25/16.
 //
-
+//
 import UIKit
 
 struct DayCellData {
@@ -36,7 +35,7 @@ struct DayCellData {
 
 class MCalendarDayCell: UICollectionViewCell {
 
-    private var cellData:DayCellData!
+    private var cellData: DayCellData!
     private enum CellConstants {
         static let borderColor = UIColor(red: 254.0/255.0, green: 73.0/255.0, blue: 64.0/255.0, alpha: 0.8)
     }
@@ -79,15 +78,17 @@ class MCalendarDayCell: UICollectionViewCell {
     override var selected: Bool {
 
         didSet {
-            self.cellData.selected = selected
-            if selected == true {
-                self.backgroundView?.backgroundColor = UIColor.redColor()
-            }
-            else {
-                if self.cellData.today {
-                    self.backgroundView?.backgroundColor = self.cellData.todayColor
-                } else {
-                    self.backgroundView?.backgroundColor = UIColor.blueColor()
+            if let data = self.cellData {
+                self.cellData?.selected = selected
+                if selected {
+                    self.backgroundView?.backgroundColor = UIColor.redColor()
+                }
+                else {
+                    if self.cellData!.today {
+                        self.backgroundView?.backgroundColor = self.cellData?.todayColor
+                    } else {
+                        self.backgroundView?.backgroundColor = UIColor.blueColor()
+                    }
                 }
             }
         }
@@ -95,18 +96,18 @@ class MCalendarDayCell: UICollectionViewCell {
 
     lazy var textLabel : UILabel = {
 
-        let lbl = UILabel()
-        lbl.textAlignment = NSTextAlignment.Center
-        lbl.textColor = UIColor.darkGrayColor()
+        let label = UILabel()
+        label.textAlignment = .Center
+        label.textColor = .darkGrayColor()
 
-        return lbl
+        return label
 
     }()
 
     lazy var dotsView : UIView = {
 
-        let frm = CGRect(x: 8.0, y: self.frame.size.width - 10.0 - 4.0, width: self.frame.size.width - 16.0, height: 8.0)
-        let dv = UIView(frame: frm)
+        let frame = CGRect(x: 8.0, y: self.frame.size.width - 10.0 - 4.0, width: self.frame.size.width - 16.0, height: 8.0)
+        let dv = UIView(frame: frame)
 
         return dv
 
@@ -117,7 +118,8 @@ class MCalendarDayCell: UICollectionViewCell {
         super.init(frame: frame)
 
         self.backgroundView = UIView(frame:self.frame)
-
+        self.cellData = DayCellData()
+        
         self.textLabel.frame = self.bounds
         self.addSubview(self.textLabel)
 
