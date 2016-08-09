@@ -11,7 +11,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
-## Installation
+
+## Installation Guide
 
 MCalendarKit is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
@@ -19,13 +20,15 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "MCalendarKit"
 ```
-## TODOS
+
+## TO-DOs
 - [ ] Show out of the days in the month
 - [ ] Show as week
 - [ ] Add multiple dots for day
 - [ ] Landscape support
 - [x] Circular Dates
-## Author
+
+## Authors
 
 - Ridvan Kucuk, ridvankuccuk@gmail.com
 - Candost Dagdeviren, candostdagdeviren@gmail.com
