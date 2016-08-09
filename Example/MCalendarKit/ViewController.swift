@@ -23,6 +23,7 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         params[.SelectedCellBackgroundColor] = UIColor.cyanColor()
         params[.DeselectedCellBackgroundColor] = UIColor.lightGrayColor()
         params[.TodayDeSelectedBackgroundColor] = UIColor.redColor()
+        params[.Circular] = false
         
         viewCalendar = MCalendarView()
         viewCalendar?.direction = .Horizontal

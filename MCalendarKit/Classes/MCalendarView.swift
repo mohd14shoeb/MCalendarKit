@@ -38,9 +38,10 @@ public enum Parameters: String {
     case DeselectedCellBackgroundColor = "deselectedCellBackgroundColor"
     case AllowMultipleSelection = "allowMultipleSelection"
     case TodayDeSelectedBackgroundColor = "todayDeselectedBackgroundColor"
+    case Circular = "circular"
     case None = "none"
     
-    static let values = [CalendarBackgroundColor, SelectedCellBackgroundColor, DeselectedCellBackgroundColor, AllowMultipleSelection, None]
+    static let values = [CalendarBackgroundColor, SelectedCellBackgroundColor, DeselectedCellBackgroundColor, AllowMultipleSelection, TodayDeSelectedBackgroundColor, Circular, None]
     
     public static func get(status:String) -> Parameters {
         
@@ -147,7 +148,8 @@ public class MCalendarView: UIView {
     private var deselectedCellBackgroundColor: UIColor? // Default cell background Color
     private var selectedCellBackgroundColor: UIColor? // Selected cell background Color
     private var todayDeselectedBackgroundColor: UIColor?
-
+    private var isCellCercular = false
+    
     override public var frame: CGRect {
         didSet {
             let heigh = frame.size.height - CalendarViewConstants.headerDefaultHeight
@@ -290,19 +292,23 @@ public class MCalendarView: UIView {
         }
         
         if let multipleSelection = parameters[.AllowMultipleSelection] as? Bool{
-            self.calendarView.allowsMultipleSelection = multipleSelection
+            calendarView.allowsMultipleSelection = multipleSelection
         }
         
         if let cellBGColor = parameters[.SelectedCellBackgroundColor] as? UIColor{
-            self.selectedCellBackgroundColor = cellBGColor
+            selectedCellBackgroundColor = cellBGColor
         }
         
         if let deselectedCellBGColor = parameters[.DeselectedCellBackgroundColor] as? UIColor{
-            self.deselectedCellBackgroundColor = deselectedCellBGColor
+            deselectedCellBackgroundColor = deselectedCellBGColor
         }
         
         if let todayDeselectedBGColor = parameters[.TodayDeSelectedBackgroundColor] as? UIColor{
             
+        }
+        
+        if let circular = parameters[.Circular] as? Bool {
+            isCellCercular = circular
         }
         
         dispatch_async(dispatch_get_main_queue()) {
@@ -415,7 +421,9 @@ extension MCalendarView: UICollectionViewDataSource {
         } else {
             cellData.eventCount = 0
         }
-
+        
+        cellData.circular = isCellCercular
+        
         dayCell.setCellData(cellData)
         
         return dayCell

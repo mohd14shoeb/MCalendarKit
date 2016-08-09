@@ -15,14 +15,17 @@ struct DayCellData {
     var shouldHideCell:Bool
     var todayColor: UIColor
     var cornerRadius: CGFloat
+    var circular: Bool
 
     init(dayNumber:String = "",
          eventCount:Int = 0,
          selected:Bool = false,
          today:Bool = false,
          shouldHideCell:Bool = false,
-         todayColor: UIColor = .greenColor(),
-         cornerRadius: CGFloat = 0.0) {
+         todayColor:UIColor = .greenColor(),
+         cornerRadius:CGFloat = 0.0,
+         circular:Bool = false) {
+        
         self.today = today
         self.selected = selected
         self.eventCount = eventCount
@@ -30,7 +33,9 @@ struct DayCellData {
         self.todayColor = todayColor
         self.shouldHideCell = shouldHideCell
         self.cornerRadius = cornerRadius
+        self.circular = circular
     }
+    
 }
 
 class MCalendarDayCell: UICollectionViewCell {
@@ -72,13 +77,18 @@ class MCalendarDayCell: UICollectionViewCell {
         self.hidden = data.shouldHideCell
         textLabel.text = data.dayNumber
         eventsCount = data.eventCount
-        self.layer.cornerRadius = data.cornerRadius
+        if data.cornerRadius > 0 {
+            self.layer.cornerRadius = data.cornerRadius
+        }
+        else if data.circular {
+            self.backgroundView!.layer.cornerRadius = self.contentView.frame.size.height / 2
+        }
     }
 
     override var selected: Bool {
 
         didSet {
-            if let data = self.cellData {
+            if self.cellData != nil {
                 self.cellData?.selected = selected
                 if selected {
                     self.backgroundView?.backgroundColor = UIColor.redColor()
@@ -98,7 +108,7 @@ class MCalendarDayCell: UICollectionViewCell {
 
         let label = UILabel()
         label.textAlignment = .Center
-        label.textColor = .darkGrayColor()
+        label.textColor = .whiteColor()
 
         return label
 

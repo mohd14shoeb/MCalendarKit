@@ -24,6 +24,7 @@ pod "MCalendarKit"
 - [ ] Show as week
 - [ ] Add multiple dots for day
 - [ ] Landscape support
+- [x] Circular Dates
 ## Author
 
 - Ridvan Kucuk, ridvankuccuk@gmail.com
