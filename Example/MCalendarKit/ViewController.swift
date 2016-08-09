@@ -18,12 +18,12 @@ class ViewController: UIViewController, CalendarViewDataSource, CalendarViewDele
         super.viewDidLoad()
         
         var params = [Parameters : AnyObject]()
-        params[.CalendarBackgroundColor] = UIColor.brownColor()
+        params[.CalendarBackgroundColor] = UIColor.whiteColor()
         params[.AllowMultipleSelection] = true
         params[.SelectedCellBackgroundColor] = UIColor.cyanColor()
         params[.DeselectedCellBackgroundColor] = UIColor.lightGrayColor()
         params[.TodayDeSelectedBackgroundColor] = UIColor.redColor()
-        params[.Circular] = false
+        params[.Circular] = true
         
         viewCalendar = MCalendarView()
         viewCalendar?.direction = .Horizontal

@@ -66,12 +66,12 @@ class MCalendarDayCell: UICollectionViewCell {
     func setCellData(data:DayCellData) {
         cellData = data
         if data.selected {
-            self.backgroundView?.backgroundColor = UIColor.redColor()
+            pBackgroundView.backgroundColor = UIColor.redColor()
         } else {
             if data.today {
-                self.backgroundView?.backgroundColor = data.todayColor
+                pBackgroundView.backgroundColor = data.todayColor
             } else {
-                self.backgroundView?.backgroundColor = UIColor.blueColor()
+                pBackgroundView.backgroundColor = UIColor.blueColor()
             }
         }
         self.hidden = data.shouldHideCell
@@ -81,7 +81,7 @@ class MCalendarDayCell: UICollectionViewCell {
             self.layer.cornerRadius = data.cornerRadius
         }
         else if data.circular {
-            self.backgroundView!.layer.cornerRadius = self.contentView.frame.size.height / 2
+            pBackgroundView.layer.cornerRadius = self.contentView.frame.size.height / 2
         }
     }
 
@@ -91,13 +91,13 @@ class MCalendarDayCell: UICollectionViewCell {
             if self.cellData != nil {
                 self.cellData?.selected = selected
                 if selected {
-                    self.backgroundView?.backgroundColor = UIColor.redColor()
+                    pBackgroundView.backgroundColor = UIColor.redColor()
                 }
                 else {
                     if self.cellData!.today {
-                        self.backgroundView?.backgroundColor = self.cellData?.todayColor
+                        pBackgroundView.backgroundColor = self.cellData?.todayColor
                     } else {
-                        self.backgroundView?.backgroundColor = UIColor.blueColor()
+                        pBackgroundView.backgroundColor = UIColor.blueColor()
                     }
                 }
             }
@@ -122,18 +122,31 @@ class MCalendarDayCell: UICollectionViewCell {
         return dv
 
     }()
-
+    
+    lazy var pBackgroundView : UIView = {
+        
+        var vFrame = CGRectInset(self.frame, 1.0, 1.0)
+        
+        let view = UIView(frame: vFrame)
+        
+        view.center = CGPoint(x: self.bounds.size.width * 0.5, y: self.bounds.size.height * 0.5)
+        
+        return view
+    }()
+    
     override init(frame: CGRect) {
 
         super.init(frame: frame)
 
-        self.backgroundView = UIView(frame:self.frame)
+        self.backgroundView = UIView(frame: CGRectInset(self.frame, 3.0, 3.0))
         self.cellData = DayCellData()
+        
+        self.addSubview(self.pBackgroundView)
         
         self.textLabel.frame = self.bounds
         self.addSubview(self.textLabel)
-
         self.addSubview(dotsView)
+        
     }
 
     required init?(coder aDecoder: NSCoder) {
