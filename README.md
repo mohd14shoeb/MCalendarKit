@@ -1,6 +1,6 @@
 # MCalendarKit
 
-[![CI Status](http://img.shields.io/travis/Ridvan Kucuk/MCalendarKit.svg?style=flat)](https://travis-ci.org/Ridvan Kucuk/MCalendarKit)
+[![CI Status](http://img.shields.io/travis/mutfak/MCalendarKit.svg?style=flat)](https://travis-ci.org/mutfak/MCalendarKit)
 [![Version](https://img.shields.io/cocoapods/v/MCalendarKit.svg?style=flat)](http://cocoapods.org/pods/MCalendarKit)
 [![License](https://img.shields.io/cocoapods/l/MCalendarKit.svg?style=flat)](http://cocoapods.org/pods/MCalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/MCalendarKit.svg?style=flat)](http://cocoapods.org/pods/MCalendarKit)
